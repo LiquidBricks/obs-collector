@@ -1,15 +1,12 @@
 import { AckPolicy, DeliverPolicy } from "@nats-io/jetstream";
-import { router, s } from "@liquid-bricks/shared-providers/subject/router";
+import { router, s } from "@liquid-bricks/lib-nats-subject/router";
 import { Codes } from "./codes.js";
 import * as log from './log/index.js'
 import * as metric from './metric/index.js'
 import * as trace from './trace/index.js'
 
 const consumerName = 'logsConsumer'
-// Log level thresholds moved from handler to pre hook logic
-const levelPriority = { error: 40, warn: 30, info: 20, debug: 10, trace: 5 }
-const currentLogLevel = 'info'
-export async function diagnosticsConsumer({ streamName, natsContext, diagnostics: d }) {
+export async function collector({ streamName, natsContext, diagnostics: d }) {
   const diagnostics = d.child({ consumerName })
 
   const jetstream = await natsContext.jetstream();

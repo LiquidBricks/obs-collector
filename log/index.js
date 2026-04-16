@@ -1,4 +1,4 @@
-import { s } from "@liquid-bricks/shared-providers/subject/router";
+import { s } from "@liquid-bricks/lib-nats-subject/router";
 import { Codes } from "../codes.js";
 
 const levelPriority = { error: 40, warn: 30, info: 20, debug: 10, trace: 5 };
