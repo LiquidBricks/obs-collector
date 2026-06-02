@@ -5,6 +5,12 @@ import * as log from './log/index.js'
 import * as metric from './metric/index.js'
 import * as trace from './trace/index.js'
 
+export const routes = [
+  [log.path, log.spec],
+  [metric.path, metric.spec],
+  [trace.path, trace.spec],
+]
+
 const consumerName = 'logsConsumer'
 export async function collector({ streamName, natsContext, diagnostics: d }) {
   const diagnostics = d.child({ consumerName })
@@ -40,10 +46,7 @@ export async function collector({ streamName, natsContext, diagnostics: d }) {
       diagnostics?.debug?.('diagnostics router aborted', { stage, reason })
       return { status: 'aborted' }
     })
-    // log events: entity=diagnostics, action is the level (debug|info|warn|error|fatal)
-    .route(log.path, log.spec)
-    .route(metric.path, metric.spec)
-    .route(trace.path, trace.spec)
+    .route({}, { children: routes })
     .default({
       handler: async ({ message, rootCtx: { diagnostics } }) => {
         diagnostics.invariant(
