@@ -1,5 +1,7 @@
 import { AckPolicy, DeliverPolicy } from "@nats-io/jetstream";
 import { router, s } from "@liquid-bricks/lib-nats-subject/router";
+import { diagnostics as diagnosticsSubjectFactory } from '@liquid-bricks/lib-nats-subject'
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 import { Codes } from "./codes.js";
 import * as log from './log/index.js'
 import * as metric from './metric/index.js'
@@ -28,9 +30,8 @@ export async function collector({ streamName, natsContext, diagnostics: d }) {
     ack_policy: AckPolicy.Explicit,
     deliver_policy: DeliverPolicy.All,
     filter_subjects: [
-      // Structured log channel (env.ns.tenant.context.log.entity.action.version.id)
-      'tele.>',
-      'metrics.>',
+      diagnosticsSubjectFactory.create(natsEvents.tele['>']).forSubscribe().build(),
+      diagnosticsSubjectFactory.create(natsEvents.metrics['>']).forSubscribe().build(),
     ],
   });
 
