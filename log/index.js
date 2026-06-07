@@ -1,10 +1,11 @@
+import { create as createTelemetrySubject } from '@liquid-bricks/lib-nats-subject/create/telemetry';
 import { s } from "@liquid-bricks/lib-nats-subject/router";
 import { Codes } from "../codes.js";
 
 const levelPriority = { error: 40, warn: 30, info: 20, debug: 10, trace: 5 };
 const currentLogLevel = 'debug';
 
-export const path = { channel: 'log' };
+export const path = createTelemetrySubject().log().forSubscribe().toObject();
 export const spec = {
   tokens: ['version'],
   decode: [
