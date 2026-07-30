@@ -2,7 +2,7 @@ import { AckPolicy, DeliverPolicy } from "@nats-io/jetstream";
 import { router, s } from "@liquid-bricks/lib-nats-subject/router";
 import { diagnostics as diagnosticsSubjectFactory } from '@liquid-bricks/lib-nats-subject'
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
-import { Codes } from "./codes.js";
+import { ROUTER_UNKNOWN_SUBJECT } from '@liquid-bricks/lib-diagnostics/codes'
 import * as log from './log/index.js'
 import * as metric from './metric/index.js'
 import * as trace from './trace/index.js'
@@ -52,7 +52,7 @@ export async function collector({ streamName, natsContext, diagnostics: d }) {
       handler: async ({ message, rootCtx: { diagnostics } }) => {
         diagnostics.invariant(
           message?.term?.(`No handler for subject: ${message.subject}`) ?? false,
-          Codes.ROUTER_UNKNOWN_SUBJECT,
+          ROUTER_UNKNOWN_SUBJECT,
           `No handler for subject: ${message.subject}`,
           { subject: message.subject, message: message?.json?.() }
         )
